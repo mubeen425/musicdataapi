@@ -7,8 +7,8 @@
     },
     "dbConfig": {
         "HOST": "34.66.229.183",
-        "USER": "freshveg",
-        "PASSWORD": "freshveg78683",
+        "USER": "root",
+        "PASSWORD": "",
         "DB": "sfreshveg-prod"
     }
 }
