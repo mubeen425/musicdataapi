@@ -6,7 +6,7 @@
         "password": "logicsyard@786"
     },
     "dbConfig": {
-        "HOST": "localhost",
+        "HOST": "34.66.229.183",
         "USER": "freshveg",
         "PASSWORD": "freshveg78683",
         "DB": "sfreshveg-prod"
