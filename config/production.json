@@ -1,0 +1,14 @@
+{
+    "origin": "localhost:3000",
+    "Email_env": {
+        "service": "gmail",
+        "email": "logicsyard@gmail.com",
+        "password": "logicsyard@786"
+    },
+    "dbConfig": {
+        "HOST": "localhost",
+        "USER": "freshveg",
+        "PASSWORD": "freshveg78683",
+        "DB": "sfreshveg-prod"
+    }
+}
