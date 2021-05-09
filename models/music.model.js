@@ -19,6 +19,9 @@ function MusicModel(sequelize, Sequelize) {
     description: {
       type: Sequelize.STRING,
     },
+    musicPath: {
+      type: Sequelize.STRING
+    },
     isActive: {
       type: Sequelize.BOOLEAN,
       defaultValue: 1,

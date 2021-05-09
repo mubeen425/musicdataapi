@@ -4,10 +4,12 @@ const router = require("express").Router();
 
 const music = new MusicController();
 const Token = require("../middleware/token");
+const upload = require('../helpers/FileUpload');
 
 router.post(
     "/create",
     Token.isAuthenticated(),
+    upload.single('music'),
     music.create
 );
 
@@ -18,6 +20,7 @@ router.get("/getById/:id", Token.isAuthenticated(), music.getMusicById);
 router.put(
     "/updateMusic/:musicId",
     Token.isAuthenticated(),
+    upload.single('music'),
     music.updateMusic
 );
 

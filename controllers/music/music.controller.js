@@ -1,10 +1,10 @@
 const _ = require("lodash");
 const db = require("../../models");
+const fs = require('fs');
 
 const Category = db.category;
 const User = db.users;
 const Music = db.music;
-
 class MusicController {
     create = async (req, res) => {
         try {
@@ -13,8 +13,16 @@ class MusicController {
                 "categoryId",
                 "artistId",
                 "description",
+                "musicPath",
                 "isActive",
             ]);
+
+            if (!req.file)
+                return res.status(401).send({
+                    message: "File is required."
+                });
+
+            music.musicPath = req.file.path;
 
             let foundUser = await User.findOne({
                 where: {
@@ -133,11 +141,12 @@ class MusicController {
 
     updateMusic = async (req, res) => {
         try {
-            const category = _.pick(req.body, [
+            let music = _.pick(req.body, [
                 "name",
                 "description",
                 "isActive",
                 "artistId",
+                "musicPath",
                 "categoryId",
             ]);
 
@@ -174,24 +183,38 @@ class MusicController {
                 });
 
             if (foundMusic) {
-                let updatedSubCategory = await Music.update(category, {
-                    where: {
-                        id: req.params.musicId,
-                    },
-                })
-                    .then((data) => {
-                        res.status(200).send({
-                            success: true,
-                            message: "Successfully Updated!"
-                        });
+                if (req.file) {
+                    fs.unlinkSync(foundMusic.musicPath);
+                    music.musicPath = req.file.path;
+                    let updatedSubCategory = await Music.update(music, {
+                        where: {
+                            id: req.params.musicId,
+                            isActive: true
+                        },
                     })
-                    .catch((err) => {
-                        res.status(500).send({
-                            success: false,
-                            message: err.message ||
-                                "Some error occurred while updating the music.",
+                    res.status(200).send({ message: "Successfully Updated" });
+                }
+                else {
+                    let updatedSubCategory = await Music.update(music, {
+                        where: {
+                            id: req.params.musicId,
+                            isActive: true
+                        },
+                    })
+                        .then((data) => {
+                            res.status(200).send({
+                                success: true,
+                                message: "Successfully Updated!"
+                            });
+                        })
+                        .catch((err) => {
+                            res.status(500).send({
+                                success: false,
+                                message: err.message ||
+                                    "Some error occurred while updating the music.",
+                            });
                         });
-                    });
+                }
             } else {
                 res.status(200).send({
                     code: 404,
