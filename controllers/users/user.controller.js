@@ -1,15 +1,11 @@
 const _ = require("lodash");
-const fs = require("fs");
 const bcrypt = require("bcrypt");
-const config = require("config");
-const randomstring = require("crypto-random-string");
 const db = require("../../models");
 const { validateUser } = require("../../models/user.model");
 const Emailverification = require("../../helpers/Emailverification");
 const sendVerificationEmail = require("../../helpers/EmailverificationSend");
 
 const Users = db.users;
-
 class User {
   create = async (req, res) => {
     const { error } = validateUser(req.body);

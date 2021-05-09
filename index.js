@@ -3,6 +3,8 @@ global.ROOTPATH = __dirname;
 const http = require("http");
 var moment = require("moment");
 const express = require('express');
+var passport = require('passport');
+var session = require('express-session');
 
 const { connect_cache } = require("./cache/redis.service");
 const db = require("./models");
@@ -50,10 +52,18 @@ db.sequelize
         console.error("❗️ Could not connect to database...", err.message);
         process.exit();
     });
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api", require("./startup/api"));
 app.use("/cache", require("./cache"));
 app.use("/", require("./startup/web"));
+
+app.use(session({
+    secret: 's3cr3t',
+    resave: true,
+    saveUninitialized: true
+}));
 
 // Exceptions Handling
 require("./startup/exceptions")();

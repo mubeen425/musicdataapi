@@ -10,5 +10,20 @@
         "USER": "root",
         "PASSWORD": "",
         "DB": "sfreshvegprod"
+    },
+    "google": {
+        "clientID": "541773199483-3c8jud149uf7l7ppe729j7d3dhfo600t.apps.googleusercontent.com",
+        "clientSecret": "BZGjhd7n_F563OCGjFbK44yQ",
+        "callBackUrl": "/api/auth/google/redirect"
+    },
+    "facebook": {
+        "appID": "308133954158775",
+        "appSecret": "197ca40459d5bcb64972c5c97d26f885",
+        "callBackUrl": "/api/auth/facebook/redirect"
+    },
+    "twitter": {
+        "apiKey": "308133954158775",
+        "apiSecret": "197ca40459d5bcb64972c5c97d26f885",
+        "callBackUrl": "/api/auth/twitter/redirect"
     }
 }
