@@ -243,20 +243,24 @@ class MusicController {
             });
 
             if (!foundMusic)
-                return res.status(404).sedn({
+                return res.status(404).send({
                     message: "Not found."
                 });
 
-            let music = await Music.update(cat, {
+            Music.destroy({
                 where: {
                     id: req.params.musicId,
                 },
-            });
+            }).then(data => {
+                fs.unlinkSync(foundMusic.musicPath);
+                res.status(200).send({
+                    success: true,
+                    message: "Music Deleted Successfully!",
+                });
+            }).catch(err => {
+                res.status(400).send({ message: err.message });
+            })
 
-            res.status(200).send({
-                success: true,
-                message: "Music Deleted Successfully!",
-            });
         } catch (err) {
             return res
                 .status(500)

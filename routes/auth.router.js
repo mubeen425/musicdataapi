@@ -30,12 +30,9 @@ router.get('/facebook', passport.authenticate('facebook'));
 
 router.get('/facebook/redirect',
     passport.authenticate('facebook', {
-        successRedirect: '/',
         failureRedirect: '/login'
     }),
-    (req, res) => {
-        res.redirect('/');
-    }
+    Auth.Facebook
 );
 
 router.get('/twitter', passport.authenticate('twitter'));

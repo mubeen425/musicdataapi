@@ -105,6 +105,37 @@ class Authentication {
         }
     }
 
+    Facebook = async (req, res) => {
+        let { first_name, last_name, email } = req.user._json;
+        let concatName = first_name + last_name;
+        try {
+            let foundUser = await Users.findOne({
+                raw: true,
+                where: {
+                    email: email
+                }
+            });
+            if (foundUser) {
+                await generateTokenWithResp(req, res, foundUser.id, foundUser);
+            }
+            else {
+                let userObj = {
+                    userName: concatName,
+                    email: email,
+                    userType: "facebook",
+                    emailVerified: true
+                }
+                let newUser = await Users.create(userObj);
+                if (newUser) {
+                    await generateTokenWithResp(req, res, newUser.id, newUser);
+                }
+            }
+        }
+        catch (err) {
+            res.status(500).send({ message: err.message });
+        }
+    }
+
     Logout = async (req, res) => {
         getUserStateToken(req.auth).then(data => {
             if (data == null) {

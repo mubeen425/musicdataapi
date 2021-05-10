@@ -33,7 +33,6 @@ passport.use(
     profileFields: ["email", "name"]
   },
     function (accessToken, refreshToken, profile, done) {
-      console.log("User Profie => ", profile);
       return done(null, profile);
     }
   )
