@@ -43,6 +43,7 @@ class User {
             
             const salt = await bcrypt.genSalt(10);
             customUser.password = await bcrypt.hash(customUser.password, salt);
+            customUser.userType = 'custom';
 
           Users.create(customUser)
             .then((data) => {

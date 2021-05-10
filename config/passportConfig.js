@@ -20,7 +20,6 @@ passport.use(
       callbackURL: config.get('google.callBackUrl')
     },
     function (accessToken, refreshToken, profile, done) {
-      console.log("User Profie => ", profile);
       return done(null, profile);
     }
   )

@@ -1,13 +1,9 @@
 const db = require("../../models");
-const _ = require("lodash");
-const fs = require("fs");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
-const jwt = require("jsonwebtoken");
 const moment = require("moment");
 
 const {
-    setUserStateToken,
     deleteUserStateToken,
     getUserStateToken
 } = require(
@@ -16,7 +12,7 @@ const {
 const ForgetPasswordEmailSend = require("../../helpers/ForgetPasswordSend");
 const sendVerificationEmail = require("../../helpers/EmailverificationSend");
 const forgetpassword = require("../../helpers/ForgetPasswordVerification");
-let privateKEY = fs.readFileSync('config/cert/private.key', 'utf8');
+const generateTokenWithResp = require("../../helpers/genTokenWithResp");
 
 moment.fn.fromNow_seconds = function (a) {
     let duration = moment(this).diff(moment(), 'seconds');
@@ -55,26 +51,7 @@ class Authentication {
                             });
 
                     try {
-                        let Token = AuthTokenGen(result.id);
-
-                        setUserStateToken(Token, moment(moment().add(48, 'hours')).fromNow_seconds())
-                            .then(
-                                (success) => {
-                                    console.log("Refresh Token Recorded")
-                                }
-                            )
-                            .catch((error) => {
-                                console.log(error);
-                                res.json(error);
-                            });
-                        res
-                            .header("x-auth-token", Token)
-                            .status(200)
-                            .send({
-                                data: result,
-                                accessToken: Token
-                            });
-
+                        await generateTokenWithResp(req, res, result.id, result);
                     } catch (err) {
                         return res.send(err.message);
                     }
@@ -95,6 +72,38 @@ class Authentication {
                     });
             });
     };
+
+    Google = async (req, res) => {
+        let { name, email } = req.user._json;
+        let splitName = name.split(' ');
+        let concatName = splitName[0] + splitName[1];
+        try {
+            let foundUser = await Users.findOne({
+                raw: true,
+                where: {
+                    email: email
+                }
+            });
+            if (foundUser) {
+                await generateTokenWithResp(req, res, foundUser.id, foundUser);
+            }
+            else {
+                let userObj = {
+                    userName: concatName,
+                    email: email,
+                    userType: "google",
+                    emailVerified: true
+                }
+                let newUser = await Users.create(userObj);
+                if (newUser) {
+                    await generateTokenWithResp(req, res, newUser.id, newUser);
+                }
+            }
+        }
+        catch (err) {
+            res.status(500).send({ message: err.message });
+        }
+    }
 
     Logout = async (req, res) => {
         getUserStateToken(req.auth).then(data => {
@@ -213,24 +222,6 @@ class Authentication {
                     });
             });
     };
-}
-
-function AuthTokenGen(id) {
-    var i = "logicsyard";
-    var s = "logicsyard@gmail.com";
-    var signOptions = {
-        issuer: i,
-        subject: s,
-        algorithm: "RS256"
-    };
-    var payload = {
-        id: id
-    };
-    // jwt.sign(payload, config.get("JWT.privateKey"))
-    var token = jwt.sign(payload, privateKEY, signOptions);
-    // This function is pushing the jwt to a cache Any jwt not in this cache is not
-    // usable
-    return token;
 }
 
 function validation(request) {

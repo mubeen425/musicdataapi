@@ -11,6 +11,9 @@ function UsersModel(sequelize, Sequelize) {
     password: {
       type: Sequelize.STRING
     },
+    userType: {
+      type: Sequelize.STRING
+    },
     emailVerified: {
       type: Sequelize.BOOLEAN,
       defaultValue: false

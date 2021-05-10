@@ -23,10 +23,7 @@ router.get("/google", passport.authenticate("google", {
 
 router.get('/google/redirect',
     passport.authenticate('google', { failureRedirect: '/login' }),
-    (req, res) => {
-        console.log(req.user);
-        res.redirect('/');
-    }
+    Auth.Google
 );
 
 router.get('/facebook', passport.authenticate('facebook'));

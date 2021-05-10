@@ -64,7 +64,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-
+app.get('/');
 // Exceptions Handling
 require("./startup/exceptions")();
 
